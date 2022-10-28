@@ -3,15 +3,42 @@
 #include <sstream>
 #include <vector>
 
-memory mem;
-int error_count = 0; 
-std::stack<float> stack;
-
 struct memory
 {
     float values[256];
     std::vector<int> adress;
 };
+
+memory mem;
+int error_count = 0; 
+std::stack<float> stack;
+
+std::string lowercase(std::string &str)
+{
+    int i = 0;
+    while (str[i] != '\0')
+    {
+        str[i] = tolower(str[i]);
+        i++;
+    }
+    return str;
+}
+
+int identify_operation(std::string operacao)
+{
+    const int qtdOps = 14;
+    int count = 0;
+    std::string operations[qtdOps] = {"pushi", "push", "pop", "input", "print", "add", "sub", "mul", "div","swap", "drop", "dup", "hlt", "erro"};
+    while (count < qtdOps)
+    {
+        if (operations[count] == operacao)
+        {
+            return count;
+        }
+        count++;
+    }
+    return 13;
+}
 
 std::string exec_operation(std::string &operation)
 {
@@ -55,39 +82,13 @@ std::string exec_operation(std::string &operation)
             //dup(pilha);
             break;
         case 12:
-            //operacao = "hlt";
+            operation = "hlt";
             break;
         case 13:
             //operacao = "erro";
             break;
         }
-}
-
-std::string lowercase(std::string &str)
-{
-    int i = 0;
-    while (str[i] != '\0')
-    {
-        str[i] = tolower(str[i]);
-        i++;
-    }
-    return str;
-}
-
-int identify_operation(std::string operacao)
-{
-    const int qtdOps = 14;
-    int count = 0;
-    std::string operations[qtdOps] = {"pushi", "push", "pop", "input", "print", "add", "sub", "mul", "div","swap", "drop", "dup", "hlt", "erro"};
-    while (count < qtdOps)
-    {
-        if (operations[count] == operacao)
-        {
-            return count;
-        }
-        count++;
-    }
-    return 13;
+    return operation;
 }
 
 int main()
