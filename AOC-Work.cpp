@@ -98,6 +98,21 @@ void pop()
     }
 }
 
+void input()
+{
+    if (stack.size() <= 16)
+    {
+        float value;
+        std::cin >> value;
+        stack.push(value);
+    }
+    else
+    {
+        std::cout << "Stack Overflow\n";
+        error_count++;
+    }
+}
+
 std::string exec_operation(std::string &operation)
 {
     lowercase(operation);
@@ -113,7 +128,7 @@ std::string exec_operation(std::string &operation)
         pop();
         break;
     case 3:
-        // input(pilha);
+        input();
         break;
     case 4:
         // print(pilha, operacao);
