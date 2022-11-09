@@ -9,9 +9,12 @@ struct memory
     std::vector<int> adress;
 };
 
-memory mem;
-int error_count = 0;
-std::stack<float> stack;
+struct vm
+{
+    memory mem;
+    bool error;
+    std::stack<float> stack;
+};
 
 std::string lowercase(std::string &str)
 {
@@ -40,22 +43,22 @@ int identify_operation(std::string operacao)
     return 13;
 }
 
-void pushi()
+void pushi(vm &pc)
 {
-    if (stack.size() <= 16)
+    if (pc.stack.size() <= 16)
     {
         float value;
         std::cin >> value;
-        stack.push(value);
+        pc.stack.push(value);
     }
     else
     {
         std::cout << "Stack Overflow\n";
-        error_count++;
+        pc.error = true;
     }
 }
 
-void push()
+void push(vm &pc)
 {
     int adress;
     float value;
@@ -63,72 +66,72 @@ void push()
     if (adress > 256)
     {
         std::cout << "Index Out Of Range\n";
-        error_count++;
+        pc.error = true;
     }
     else
     {
-        value = mem.values[adress - 1];
-        stack.push(value);
+        value = pc.mem.values[adress - 1];
+        pc.stack.push(value);
     }
 }
 
-void pop()
+void pop(vm &pc)
 {
     int adress;
     std::cin >> std::hex >> adress;
     if (adress > 256)
     {
         std::cout << "Index Out Of Range\n";
-        error_count++;
+        pc.error = true;
     }
     else
     {
-        if(stack.empty())
+        if(pc.stack.empty())
         {
             std::cout << "Stack Underflow\n";
-            error_count++;
+            pc.error = true;
         }
         else
         {
-            mem.values[adress - 1] = stack.top();
-            mem.adress.push_back(adress - 1);
-            stack.pop();
+            pc.mem.values[adress - 1] = pc.stack.top();
+            pc.mem.adress.push_back(adress - 1);
+            pc.stack.pop();
         }
         
     }
 }
 
-void input()
+void input(vm &pc)
 {
-    if (stack.size() <= 16)
+    if (pc.stack.size() <= 16)
     {
         float value;
         std::cin >> value;
-        stack.push(value);
+        pc.stack.push(value);
     }
     else
     {
         std::cout << "Stack Overflow\n";
-        error_count++;
+        pc.error = true;
     }
 }
 
-std::string exec_operation(std::string &operation)
+std::string exec_operation(std::string &operation, vm &pc)
 {
     lowercase(operation);
     switch (identify_operation(operation))
     {
     case 0:
-        pushi();
+        pushi(pc);
         break;
     case 1:
-        push();
+        push(pc);
         break;
     case 2:
-        pop();
+        pop(pc);
         break;
     case 3:
-        input();
+        input(pc);
         break;
     case 4:
         // print(pilha, operacao);
@@ -159,7 +162,7 @@ std::string exec_operation(std::string &operation)
         break;
     case 13:
         operation = "error";
-        error_count++;
+        pc.error = true;
         break;
     }
     return operation;
@@ -168,9 +171,11 @@ std::string exec_operation(std::string &operation)
 int main()
 {
     std::string operation;
+    vm pc;
+    pc.error = false;
     do
     {
         std::cin >> operation;
-        exec_operation(operation);
-    } while (operation != "hlt" && error_count < 1);
+        exec_operation(operation, pc);
+    } while (operation != "hlt" && !(pc.error));
 }
