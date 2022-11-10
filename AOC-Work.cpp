@@ -116,6 +116,131 @@ void input(vm &pc)
     }
 }
 
+void print(vm &pc)
+{
+    if(pc.stack.empty())
+    {
+        std::cout << "Stack Underflow\n";
+        pc.error = true;
+    } 
+    else
+    {
+        std::cout << pc.stack.top() << std::endl;
+        pc.stack.pop();
+    }
+}
+void add(vm &pc)
+{
+    if(pc.stack.size() < 2)
+    {
+        std::cout << "Stack Underflow\n";
+        pc.error = true;
+    }
+    else
+    {
+        float a, b;
+        a = pc.stack.top();
+        pc.stack.pop();
+        b = pc.stack.top();
+        pc.stack.pop();
+        pc.stack.push(b + a);
+    }
+}
+void sub(vm &pc)
+{
+ if(pc.stack.size() < 2)
+    {
+        std::cout << "Stack Underflow\n";
+        pc.error = true;
+    }
+    else
+    {
+        float a, b;
+        a = pc.stack.top();
+        pc.stack.pop();
+        b = pc.stack.top();
+        pc.stack.pop();
+        pc.stack.push(b - a);  
+    } 
+}
+void mul(vm &pc)
+{
+ if(pc.stack.size() < 2)
+    {
+        std::cout << "Stack Underflow\n";
+        pc.error = true;
+    }
+    else
+    {
+        float a, b;
+        a = pc.stack.top();
+        pc.stack.pop();
+        b = pc.stack.top();
+        pc.stack.pop();
+        pc.stack.push(b * a);  
+    }    
+}
+void div(vm &pc)
+{
+ if(pc.stack.size() < 2)
+    {
+        std::cout << "Stack Underflow\n";
+        pc.error = true;
+    }
+    else
+    {
+        if(pc.stack.top() == 0)
+        {
+            std::cout << "Zero division error\n";
+            pc.error = true;
+        }
+        else
+        {
+            float a, b;
+            a = pc.stack.top();
+            pc.stack.pop();
+            b = pc.stack.top();
+            pc.stack.pop();
+            pc.stack.push(b * a);  
+        }
+    }    
+}
+void swap(vm &pc)
+{
+    if(pc.stack.size() < 2)
+    {
+        std::cout << "Stack Underflow\n";
+        pc.error = true;
+    }
+    else
+    {
+        float v1, v2;
+        v1 = pc.stack.top();
+        pc.stack.pop();
+        v2 = pc.stack.top();
+        pc.stack.pop();
+        pc.stack.push(v1); 
+        pc.stack.push(v2); 
+    } 
+}
+void drop(vm &pc)
+{
+    if (pc.stack.empty())
+    {
+        std::cout << "Stack Underflow\n";
+        pc.error = true;
+    }
+    else pc.stack.pop();
+}
+void dup(vm &pc)
+{
+    if (pc.stack.empty())
+    {
+        std::cout << "Stack Underflow\n";
+        pc.error = true;
+    }
+    else pc.stack.push(pc.stack.top());
+}
 std::string exec_operation(std::string &operation, vm &pc)
 {
     lowercase(operation);
@@ -134,28 +259,28 @@ std::string exec_operation(std::string &operation, vm &pc)
         input(pc);
         break;
     case 4:
-        // print(pilha, operacao);
+        print(pc);
         break;
     case 5:
-        // add(pilha);
+        add(pc);
         break;
     case 6:
-        // sub(pilha);
+        sub(pc);
         break;
     case 7:
-        // mul(pilha);
+        mul(pc);
         break;
     case 8:
-        // div(pilha, operacao);
+        div(pc);
         break;
     case 9:
-        // swap(pilha);
+        swap(pc);
         break;
     case 10:
-        // drop(pilha, operacao);
+        drop(pc);
         break;
     case 11:
-        // dup(pilha);
+        dup(pc);
         break;
     case 12:
         operation = "hlt";
@@ -166,6 +291,17 @@ std::string exec_operation(std::string &operation, vm &pc)
         break;
     }
     return operation;
+}
+void clear_stack(vm &pc)
+{
+
+}
+void end(vm &pc)
+{
+    if(pc.error)
+    {
+        std::cout << "Programa Terminado com erro!\n";
+    }
 }
 
 int main()
@@ -178,4 +314,5 @@ int main()
         std::cin >> operation;
         exec_operation(operation, pc);
     } while (operation != "hlt" && !(pc.error));
+    //end(pc); 
 }
