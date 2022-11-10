@@ -1,1 +1,2 @@
 O ARQUIVO trabalhoAOC É A PRIMEIRA VERSÃO DO TRABALHO, SENDO ASSIM AS ALTERAÇÕES VÁLIDAS DEVEM SER REALIZADAS NO ARQUIVO AOC-WORK!
+- Falta terminar a função e 'end' e a função 'clear_stack'
