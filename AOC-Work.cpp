@@ -94,10 +94,14 @@ void pop(vm &pc)
         else
         {
             pc.mem.values[adress - 1] = pc.stack.top();
+            for(auto i = pc.mem.adress.begin(), i != pc.mem.adress.end())
+            {
+                if(i == )
+            }
+            
             pc.mem.adress.push_back(adress - 1);
             pc.stack.pop();
         }
-        
     }
 }
 
@@ -292,18 +296,52 @@ std::string exec_operation(std::string &operation, vm &pc)
     }
     return operation;
 }
-void clear_stack(vm &pc)
-{
-
-}
 void end(vm &pc)
 {
-    if(pc.error)
+    if (pc.error)
+        std::cout << "PROGRAMA TERMINADO COM ERRO!\n";
+    else
     {
-        std::cout << "Programa Terminado com erro!\n";
+        std::cout << "PROGRAMA TERMINADO COM EXITO!\n";
+        if (pc.stack.empty())
+        {
+            std::cout << "PILHA ESTA VAZIA!\n";
+        }
+        else
+        {
+            std::cout << "VALORES NA PILHA:\n";
+            while (!pc.stack.empty())
+            {
+                std::cout << pc.stack.top() << std::endl;
+                pc.stack.pop();
+            }
+        }
+        if (pc.mem.adress.empty())
+        {
+            std::cout << "NENHUM ENDERECO DE MEMORIA FOI MODIFICADO\n";
+        }
+        else
+        {
+            int i = 0;
+            std::cout << "ENDERECOS DE MEMORIA MODIFICADOS:\n";
+            while (i < pc.mem.adress.size())
+            {
+                std::stringstream aux;
+                aux << std::hex << pc.mem.adress[i] + 1;
+                std::string res = aux.str();
+                int j = 0;
+                while (res[j] != '\0')
+                {
+                    res[j] = toupper(res[j]);
+                    j++;
+                }
+                std::cout << "Endereco " << res << " = " << pc.mem.values[(pc.mem.adress[i])] << std::endl;
+                i++;
+            }
+            
+        }
     }
 }
-
 int main()
 {
     std::string operation;
@@ -314,5 +352,5 @@ int main()
         std::cin >> operation;
         exec_operation(operation, pc);
     } while (operation != "hlt" && !(pc.error));
-    //end(pc); 
+    end(pc); 
 }
