@@ -86,7 +86,7 @@ void pop(vm &pc)
     }
     else
     {
-        if(pc.stack.empty())
+        if (pc.stack.empty())
         {
             std::cout << "Stack Underflow\n";
             pc.error = true;
@@ -94,12 +94,13 @@ void pop(vm &pc)
         else
         {
             pc.mem.values[adress - 1] = pc.stack.top();
-            for(auto i = pc.mem.adress.begin(), i != pc.mem.adress.end())
+            if (pc.mem.adress.empty())
+                pc.mem.adress.push_back(adress - 1);
+            for (int i = 0; i < pc.mem.adress.size(); i++)
             {
-                if(i == )
+                if (pc.mem.adress[i] != (adress - 1))
+                    pc.mem.adress.push_back(adress - 1);
             }
-            
-            pc.mem.adress.push_back(adress - 1);
             pc.stack.pop();
         }
     }
@@ -122,11 +123,11 @@ void input(vm &pc)
 
 void print(vm &pc)
 {
-    if(pc.stack.empty())
+    if (pc.stack.empty())
     {
         std::cout << "Stack Underflow\n";
         pc.error = true;
-    } 
+    }
     else
     {
         std::cout << pc.stack.top() << std::endl;
@@ -135,7 +136,7 @@ void print(vm &pc)
 }
 void add(vm &pc)
 {
-    if(pc.stack.size() < 2)
+    if (pc.stack.size() < 2)
     {
         std::cout << "Stack Underflow\n";
         pc.error = true;
@@ -152,7 +153,7 @@ void add(vm &pc)
 }
 void sub(vm &pc)
 {
- if(pc.stack.size() < 2)
+    if (pc.stack.size() < 2)
     {
         std::cout << "Stack Underflow\n";
         pc.error = true;
@@ -164,12 +165,12 @@ void sub(vm &pc)
         pc.stack.pop();
         b = pc.stack.top();
         pc.stack.pop();
-        pc.stack.push(b - a);  
-    } 
+        pc.stack.push(b - a);
+    }
 }
 void mul(vm &pc)
 {
- if(pc.stack.size() < 2)
+    if (pc.stack.size() < 2)
     {
         std::cout << "Stack Underflow\n";
         pc.error = true;
@@ -181,19 +182,19 @@ void mul(vm &pc)
         pc.stack.pop();
         b = pc.stack.top();
         pc.stack.pop();
-        pc.stack.push(b * a);  
-    }    
+        pc.stack.push(b * a);
+    }
 }
 void div(vm &pc)
 {
- if(pc.stack.size() < 2)
+    if (pc.stack.size() < 2)
     {
         std::cout << "Stack Underflow\n";
         pc.error = true;
     }
     else
     {
-        if(pc.stack.top() == 0)
+        if (pc.stack.top() == 0)
         {
             std::cout << "Zero division error\n";
             pc.error = true;
@@ -205,13 +206,13 @@ void div(vm &pc)
             pc.stack.pop();
             b = pc.stack.top();
             pc.stack.pop();
-            pc.stack.push(b * a);  
+            pc.stack.push(b * a);
         }
-    }    
+    }
 }
 void swap(vm &pc)
 {
-    if(pc.stack.size() < 2)
+    if (pc.stack.size() < 2)
     {
         std::cout << "Stack Underflow\n";
         pc.error = true;
@@ -223,9 +224,9 @@ void swap(vm &pc)
         pc.stack.pop();
         v2 = pc.stack.top();
         pc.stack.pop();
-        pc.stack.push(v1); 
-        pc.stack.push(v2); 
-    } 
+        pc.stack.push(v1);
+        pc.stack.push(v2);
+    }
 }
 void drop(vm &pc)
 {
@@ -234,7 +235,8 @@ void drop(vm &pc)
         std::cout << "Stack Underflow\n";
         pc.error = true;
     }
-    else pc.stack.pop();
+    else
+        pc.stack.pop();
 }
 void dup(vm &pc)
 {
@@ -243,7 +245,8 @@ void dup(vm &pc)
         std::cout << "Stack Underflow\n";
         pc.error = true;
     }
-    else pc.stack.push(pc.stack.top());
+    else
+        pc.stack.push(pc.stack.top());
 }
 std::string exec_operation(std::string &operation, vm &pc)
 {
@@ -338,7 +341,6 @@ void end(vm &pc)
                 std::cout << "Endereco " << res << " = " << pc.mem.values[(pc.mem.adress[i])] << std::endl;
                 i++;
             }
-            
         }
     }
 }
@@ -352,5 +354,5 @@ int main()
         std::cin >> operation;
         exec_operation(operation, pc);
     } while (operation != "hlt" && !(pc.error));
-    end(pc); 
+    end(pc);
 }
