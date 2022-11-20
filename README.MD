@@ -1,2 +1,2 @@
-O ARQUIVO trabalhoAOC É A PRIMEIRA VERSÃO DO TRABALHO, SENDO ASSIM AS ALTERAÇÕES VÁLIDAS DEVEM SER REALIZADAS NO ARQUIVO AOC-WORK!
-- Falta terminar a função e 'end' e a função 'clear_stack'
+<h1 align="center"> SIMULADOR DE ARQUITETURA ZERO OPERANDOS</h1>
+<h2 align="left">1

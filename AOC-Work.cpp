@@ -3,20 +3,20 @@
 #include <sstream>
 #include <vector>
 
-struct memory
+struct memory //ESTRUTURA PARA GUARDAR OS ENDEREÇOS DE MEMÓRIA MODIFICADOS E A MEMÓRIA EM SI
 {
     float values[256];
     std::vector<int> adress;
 };
 
-struct vm
+struct vm //ESTRUTRA PARA CRIAÇÃO DO "PC" QUE EXECUTA AS OPERAÇÕES
 {
     memory mem;
     bool error;
     std::stack<float> stack;
 };
 
-std::string lowercase(std::string &str)
+std::string lowercase(std::string &str) //PASSA A STRING DIGITADA PARA MINÚSCULO
 {
     int i = 0;
     while (str[i] != '\0')
@@ -27,7 +27,7 @@ std::string lowercase(std::string &str)
     return str;
 }
 
-int identify_operation(std::string operacao)
+int identify_operation(std::string operacao) //IDENTIFICA A OPERÇÃO DIGITADA OU RETORNA ERRO
 {
     const int qtdOps = 14;
     int count = 0;
@@ -43,7 +43,7 @@ int identify_operation(std::string operacao)
     return 13;
 }
 
-void pushi(vm &pc)
+void pushi(vm &pc) //INSERE NA PILHA O VALOR ESPECIFICADO
 {
     if (pc.stack.size() <= 16)
     {
@@ -58,7 +58,7 @@ void pushi(vm &pc)
     }
 }
 
-void push(vm &pc)
+void push(vm &pc) //INSERE NA PILHA UM VALOR QUE ESTÁ NA MEMORIA
 {
     int adress;
     float value;
@@ -70,12 +70,26 @@ void push(vm &pc)
     }
     else
     {
-        value = pc.mem.values[adress - 1];
-        pc.stack.push(value);
+        bool aux = false;
+        for(int i : pc.mem.adress)
+        {
+            if(i == adress - 1) //VERIFICA SE O ENDEREÇO DE MEMÓRIA DIGITADO CONTÉM VALOR
+            {
+                value = pc.mem.values[adress - 1];
+                pc.stack.push(value);
+                aux = true;
+            }
+        }
+        if(aux == false)
+        {
+            std::cout << "Endereço de memoria vazio\n";
+            pc.error = true; 
+        }
+        
     }
 }
 
-void pop(vm &pc)
+void pop(vm &pc) //RETIRA O VALOR DA PILHA E INSERE NA MEMÓRIA
 {
     int adress;
     std::cin >> std::hex >> adress;
@@ -93,12 +107,12 @@ void pop(vm &pc)
         }
         else
         {
-            pc.mem.values[adress - 1] = pc.stack.top();
+            pc.mem.values[adress - 1] = pc.stack.top(); //ADICIONA O VALOR NA MEMÓRIA NO INDICE CORRETO
             if (pc.mem.adress.empty())
                 pc.mem.adress.push_back(adress - 1);
             for (int i = 0; i < pc.mem.adress.size(); i++)
             {
-                if (pc.mem.adress[i] != (adress - 1))
+                if (pc.mem.adress[i] != (adress - 1)) //VERIFICA SE O ENDEREÇO JÁ EXISTE NO VETOR
                     pc.mem.adress.push_back(adress - 1);
             }
             pc.stack.pop();
@@ -106,12 +120,14 @@ void pop(vm &pc)
     }
 }
 
-void input(vm &pc)
+void input(vm &pc) //RECEBE UM VALOR E INSERE NA PILHA
 {
     if (pc.stack.size() <= 16)
     {
         float value;
-        std::cin >> value;
+        std::string input;
+        std::getline(std::cin >> std::ws, input);
+        value = std::stof(input);
         pc.stack.push(value);
     }
     else
@@ -121,7 +137,7 @@ void input(vm &pc)
     }
 }
 
-void print(vm &pc)
+void print(vm &pc) //PRINTA O VALOR DO TOPO DA PILHA
 {
     if (pc.stack.empty())
     {
@@ -134,7 +150,7 @@ void print(vm &pc)
         pc.stack.pop();
     }
 }
-void add(vm &pc)
+void add(vm &pc) //EFETUA A ADIÇÃO
 {
     if (pc.stack.size() < 2)
     {
@@ -143,15 +159,14 @@ void add(vm &pc)
     }
     else
     {
-        float a, b;
-        a = pc.stack.top();
+        float a = pc.stack.top();
         pc.stack.pop();
-        b = pc.stack.top();
+        float b = pc.stack.top();
         pc.stack.pop();
         pc.stack.push(b + a);
     }
 }
-void sub(vm &pc)
+void sub(vm &pc) //EFETUA A SUBTRAÇÃO
 {
     if (pc.stack.size() < 2)
     {
@@ -160,15 +175,14 @@ void sub(vm &pc)
     }
     else
     {
-        float a, b;
-        a = pc.stack.top();
+        float a = pc.stack.top();
         pc.stack.pop();
-        b = pc.stack.top();
+        float b = pc.stack.top();
         pc.stack.pop();
         pc.stack.push(b - a);
     }
 }
-void mul(vm &pc)
+void mul(vm &pc) //EFETUA A MULTIPLICAÇÃO
 {
     if (pc.stack.size() < 2)
     {
@@ -177,40 +191,35 @@ void mul(vm &pc)
     }
     else
     {
-        float a, b;
-        a = pc.stack.top();
+        float a = pc.stack.top();
         pc.stack.pop();
-        b = pc.stack.top();
+        float b = pc.stack.top();
         pc.stack.pop();
         pc.stack.push(b * a);
     }
 }
-void div(vm &pc)
+void div(vm &pc) //EFETUA A DIVISÃO
 {
     if (pc.stack.size() < 2)
     {
         std::cout << "Stack Underflow\n";
         pc.error = true;
     }
+    else if (pc.stack.top() == 0)
+    {
+        std::cout << "Zero division error\n";
+        pc.error = true;
+    }
     else
     {
-        if (pc.stack.top() == 0)
-        {
-            std::cout << "Zero division error\n";
-            pc.error = true;
-        }
-        else
-        {
-            float a, b;
-            a = pc.stack.top();
-            pc.stack.pop();
-            b = pc.stack.top();
-            pc.stack.pop();
-            pc.stack.push(b * a);
-        }
+        float a = pc.stack.top();
+        pc.stack.pop();
+        float b = pc.stack.top();
+        pc.stack.pop();
+        pc.stack.push(b * a);
     }
 }
-void swap(vm &pc)
+void swap(vm &pc) //INVERTE A POSIÇÃO DE DOIS VALORES DA PILHA
 {
     if (pc.stack.size() < 2)
     {
@@ -228,7 +237,7 @@ void swap(vm &pc)
         pc.stack.push(v2);
     }
 }
-void drop(vm &pc)
+void drop(vm &pc) //RETIRA O VALOR DO TOPO DA PILHA
 {
     if (pc.stack.empty())
     {
@@ -238,7 +247,7 @@ void drop(vm &pc)
     else
         pc.stack.pop();
 }
-void dup(vm &pc)
+void dup(vm &pc) //DUPLICA O VALOR DO TOPO DA PILHA
 {
     if (pc.stack.empty())
     {
@@ -248,7 +257,7 @@ void dup(vm &pc)
     else
         pc.stack.push(pc.stack.top());
 }
-std::string exec_operation(std::string &operation, vm &pc)
+std::string exec_operation(std::string &operation, vm &pc) //BUSCA E CHAMA A FUNÇÃO QUE EXECUTARA A OPERAÇÃO 
 {
     lowercase(operation);
     switch (identify_operation(operation))
