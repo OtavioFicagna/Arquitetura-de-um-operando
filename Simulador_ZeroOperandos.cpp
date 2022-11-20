@@ -126,6 +126,7 @@ void input(vm &pc) //RECEBE UM VALOR E INSERE NA PILHA
     {
         float value;
         std::string input;
+        std::cout << "Digite um valor: ";
         std::getline(std::cin >> std::ws, input);
         value = std::stof(input);
         pc.stack.push(value);
