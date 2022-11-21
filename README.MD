@@ -16,7 +16,23 @@
 * O simulador não é 'case sensitive'.
 
 ## Utilização:
-1. Rode o arquivo 
+1. Compile e execute o arquivo Simulador_ZeroOperandos.cpp
+2. Insira as operações desejadas corretamente *Lembre que o programa não é case sensitive
+3. Caso não haja nenhum erro você pode digitar hlt para terminar o programa
+* Obs: Caso utilize um redirecionamento de arquivo como entrada, coloque o valor digitado ao lado da função input, exemplo: input 10.
+
+### Exemplo de utilização:
+```
+PUSHI 3.1415   # Insere o valor do PI na pilha
+INPUT          # Lê um valor para R e insere na pilha
+DUP            # Duplica R na pilha
+MUL            # Calcula R*R
+MUL            # Multiplica por PI
+DUP            # Duplica valor no topo
+PRINT          # Exibe resultado
+POP 80         # Armazena o valor no endereço 80 (variável A)
+HLT            # Encerra execução
+```
 
 ## Operações:
 - [pushi](#pushi-valor)
@@ -83,3 +99,8 @@
 ### hlt:
 **Descrição:**
 - Encerra a execução do programa e sai do simulador.
+
+## Autores:
+- Otávio Augusto Ficagna
+- Gabriel Rodrigues de Lara Junqueira
+- Rafael Antônio Zanoni
