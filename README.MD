@@ -1,4 +1,4 @@
-<h1 align="center"> SIMULADOR DE MÁQUINA DE PILHA</h1>
+<h1 align="center">SIMULADOR DE MÁQUINA DE PILHA</h1>
 
 ### Simples simulador de uma arquitetura de zero operandos (PILHA) escrita em C++.
 ## INFORMAÇÕES IMPORTANTES
